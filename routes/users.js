@@ -15,6 +15,7 @@ router.get('/login', function(req, res){
 	res.render('login');
 });
 
+
 // Register User
 router.post('/register', function(req, res){
 	var name = req.body.name;
@@ -96,7 +97,7 @@ router.get('/logout', function(req, res){
 
 	req.flash('success_msg', 'You are logged out');
 
-	res.redirect('/users/login');
+	res.redirect('/blog');
 });
 
 module.exports = router;
