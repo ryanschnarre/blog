@@ -1,7 +1,9 @@
-<h2 class="page-header">Register</h2>
+
+<h2 style="margin-top:30px;">Registration Form</h2>
+
 {{#if errors}}
       {{#each errors}}
-        <div class="alert alert-danger">{{msg}}</div>
+        <div style="margin-top:15px;" class="alert alert-danger">{{msg}}</div>
       {{/each}}
 {{/if}}
 <form method="post" action="/users/register">
