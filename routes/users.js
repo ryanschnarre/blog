@@ -5,13 +5,13 @@ var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/user');
 
 
-
+// Renders register.hbrs
 router.get('/register', function(req, res) {
 	res.render('register');
 });
 
 
-
+// Renders login.hbrs
 router.get('/login', function(req, res) {
 	res.render('login');
 });
@@ -19,13 +19,14 @@ router.get('/login', function(req, res) {
 
 
 router.post('/register', function(req, res) {
+	// Requests account data from user
 	var name = req.body.name;
 	var email = req.body.email;
 	var username = req.body.username;
 	var password = req.body.password;
 	var password2 = req.body.password2;
 
-	// Validation
+	// Validates user input 
 	req.checkBody('name', 'Name is required').notEmpty();
 	req.checkBody('email', 'Email is required').notEmpty();
 	req.checkBody('email', 'Email is not valid').isEmail();
@@ -35,6 +36,7 @@ router.post('/register', function(req, res) {
 
 	var errors = req.validationErrors();
 
+	// Handles errors, else insert new user to "users" collection in Mongo
 	if(errors) {
 		res.render('register', {
 			errors:errors
@@ -52,6 +54,7 @@ router.post('/register', function(req, res) {
 			console.log(user);
 		});
 
+		// Gives green light to login, redirects to login page
 		req.flash('success_msg', 'You are registered and can now login');
 		res.redirect('/users/login');
 	}
@@ -61,6 +64,7 @@ router.post('/register', function(req, res) {
 
 passport.use(new LocalStrategy(
 
+	// Passport checks if username is valid
   function(username, password, done) {
    User.getUserByUsername(username, function(err, user) {
    	if(err) throw err;
@@ -68,6 +72,7 @@ passport.use(new LocalStrategy(
    		return done(null, false, {message: 'Unknown User'});
    	}
 
+	 // Passport checks if password is a match
    User.comparePassword(password, user.password, function(err, isMatch) {
    		if(err) throw err;
    		if(isMatch) {
@@ -80,13 +85,13 @@ passport.use(new LocalStrategy(
   }));
 
 
-
+// Stores cookie in brower to maintain login session
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
 
 
-
+// Removes cookie to logout
 passport.deserializeUser(function(id, done) {
   User.getUserById(id, function(err, user) {
     done(err, user);
@@ -94,7 +99,7 @@ passport.deserializeUser(function(id, done) {
 });
 
 
-
+// Gives routes for successful and failed logins
 router.post('/login',
   passport.authenticate('local', {successRedirect:'/', failureRedirect:'/users/login',failureFlash: true}),
   function(req, res) {
@@ -102,7 +107,7 @@ router.post('/login',
   });
 
 
-
+// Logs user out, redirects to unlogged in blog page
 router.get('/logout', function(req, res){
 	req.logout();
 	req.flash('success_msg', 'You are logged out');

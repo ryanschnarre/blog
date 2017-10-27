@@ -1,5 +1,8 @@
+// For mongo db object modeling
 var mongoose = require('mongoose');
+// Encryption method for password
 var bcrypt = require('bcryptjs');
+// Schema for user account
 var UserSchema = mongoose.Schema({
 	username: {
 		type: String,
@@ -18,7 +21,7 @@ var UserSchema = mongoose.Schema({
 var User = module.exports = mongoose.model('User', UserSchema);
 
 
-
+// Encrypts and hashes password to be stored in MongoDB user collection
 module.exports.createUser = function(newUser, callback) {
 
 	bcrypt.genSalt(10, function(err, salt) {
@@ -31,7 +34,7 @@ module.exports.createUser = function(newUser, callback) {
 }
 
 
-
+// Queries username
 module.exports.getUserByUsername = function(username, callback) {
 
 	var query = {username: username};
@@ -40,7 +43,7 @@ module.exports.getUserByUsername = function(username, callback) {
 }
 
 
-
+// Queries userID
 module.exports.getUserById = function(id, callback) {
 
 	User.findById(id, callback);
@@ -48,7 +51,7 @@ module.exports.getUserById = function(id, callback) {
 }
 
 
-
+// Compares user entered password with hashed password in MongoDB
 module.exports.comparePassword = function(candidatePassword, hash, callback) {
 
 	bcrypt.compare(candidatePassword, hash, function(err, isMatch) {

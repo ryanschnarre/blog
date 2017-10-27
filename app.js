@@ -16,7 +16,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 
-// Init App
+// Inititializes the express application
 var app = express();
 
 
@@ -49,7 +49,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-// Express Validator
+// Express validates a req and returns errors if any of configured validation fails
 app.use(expressValidator({
   errorFormatter: function(param, msg, value) {
       var namespace = param.split('.')
@@ -68,11 +68,11 @@ app.use(expressValidator({
 }));
 
 
-// Connect Flash
+// Connect to flash
 app.use(flash());
 
 
-// Error Messages
+// Use Flash for Error Messages
 app.use(function (req, res, next) {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
